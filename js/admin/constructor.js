@@ -1,19 +1,19 @@
 const $ = document.querySelector.bind(document)
 const $$ = document.querySelectorAll.bind(document)
-let brandValues = ['IPhone', 'Samsung', 'Oppo', 'Xiaomi', 'Vivo', 'Realme', 'Nokia', 'Masstel', 'Itel', 'Mobell']
-let romValues = ['16 GB', '32 GB', '64 GB', '128 GB', '256 GB', '512 GB', '1 TB'];
-let ramValues = ['1 GB', '2 GB', '3 GB', '4 GB', '6 GB', '8 GB', '12 GB']
+let brandValues = ['Thiên Long', 'Bến Nghé', 'Hồng Hà']
+let nibValues = ['0.5 mm', '0.6 mm', '0.7 mm', '0.8 mm', 'Đầu đạn'];
+let typeValues = ['Bi', 'Chì', 'Lông']
 class Product {
     static lastProductID = 0;
-    constructor(name, price_old, price_current, img, brand, ram, rom, sale) {
+    constructor(name, price, color, img, brand, type, nib, sale) {
         this.productID = (Product.getProducts() === null) ? ++Product.lastProductID : Product.getLastProductID() + 1;
         this.name = name;
-        this.price_old = price_old;
-        this.price_current = price_current;
+        this.price = price;
+        this.color = color;
         this.img = img;
         this.brand = brand.toLowerCase();
-        this.ram = ram
-        this.rom = rom
+        this.type = type
+        this.nib = nib
         this.sale = sale
     }
     // Lấy danh sách sản phẩm trả về mảng
@@ -50,8 +50,8 @@ class Product {
         return myList[myList.length - 1].productID;
     }
     // Thêm sản phẩm mới
-    static addProduct(name, price_old, price_current, img, brand, ram, rom, sale) {
-        const product = new Product(name, price_old, price_current, img, brand, ram, rom, sale)
+    static addProduct(name, price, color, img, brand, type, nib, sale) {
+        const product = new Product(name, price, color, img, brand, type, nib, sale)
         const list = Product.getProducts();
         list.push(product);
         Product.loadProducts(list);
@@ -59,19 +59,19 @@ class Product {
 
     }
     //Cập nhật sản phẩm
-    static updateProduct(productID, name, price_old, price_current, img, brand, ram, rom, sale) {
+    static updateProduct(productID, name, price, color, img, brand, type, nib, sale) {
         const listProduct = Product.getProducts();
 
         if (!listProduct || listProduct.length === 0) return null;
         listProduct.forEach(product => {
             if (product.productID === parseInt(productID)) {
                 product.name = name;
-                product.price_old = price_old
-                product.price_current = price_current
+                product.price = price
+                product.color = color
                 product.img = img
                 product.brand = brand
-                product.ram = ram
-                product.rom = rom
+                product.type = type
+                product.nib = nib
                 product.sale = sale
             }
         })
@@ -368,7 +368,7 @@ class cart {
     static addItemCart(userID, productID, quantity) {
         const myList = cart.getCartList(userID)
         const myProduct = Product.getProductID(productID)
-        myList.push(new ProductInCart(productID, myProduct.price_current, quantity, myProduct.img[0]));
+        myList.push(new ProductInCart(productID, myProduct.color, quantity, myProduct.img[0]));
         if (User.updateUserCart(userID, myList)) {
             return true;
         }
@@ -509,7 +509,7 @@ class Invoice {
         const list = Invoice.getInvoices()
         if (!list) return false
         let myProduct
-        myProduct = [new ProductInCart(productID, Product.getProductID(productID).price_current, quantity, Product.getProductID(productID).img[0])]
+        myProduct = [new ProductInCart(productID, Product.getProductID(productID).color, quantity, Product.getProductID(productID).img[0])]
         list.push(new Invoice(myProduct, userID, Date.now()))
         Invoice.loadInvoices(list)
     }
